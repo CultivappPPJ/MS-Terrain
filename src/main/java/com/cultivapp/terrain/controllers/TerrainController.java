@@ -3,11 +3,10 @@ package com.cultivapp.terrain.controllers;
 import com.cultivapp.terrain.entity.Terrain;
 import com.cultivapp.terrain.service.TerrainService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,13 +22,19 @@ public class TerrainController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Terrain>> getAllTerrains() {
-        List<Terrain> terrains = terrainService.findAllTerrains();
+    public ResponseEntity<Page<Terrain>> getTerrainsForSale(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+        Page<Terrain> terrains = terrainService.findTerrainsForSale(page, size);
         return new ResponseEntity<>(terrains, HttpStatus.OK);
     }
 
-    @GetMapping("/hello2")
-    public String helloWorldDos(){
-        return "Hello World Dos!";
+    @GetMapping("/crud/my/terrains")
+    public ResponseEntity<Page<Terrain>> getMyTerrains(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam String email) {
+        Page<Terrain> terrains = terrainService.getMyTerrains(page, size, email);
+        return new ResponseEntity<>(terrains, HttpStatus.OK);
     }
 }

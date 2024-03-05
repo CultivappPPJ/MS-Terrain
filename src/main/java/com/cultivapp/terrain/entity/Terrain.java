@@ -1,13 +1,17 @@
 package com.cultivapp.terrain.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Data
 @Entity
+@Table(name = "terrain")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Terrain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,9 +20,9 @@ public class Terrain {
     private String soilType;
     private String plantType;
     private String photo;
-    private String contactEmail;
+    private String email;
     private Long remainingDays;
-    private Boolean forSale;
+    private boolean forSale;
     private String fullName;
 }
 
