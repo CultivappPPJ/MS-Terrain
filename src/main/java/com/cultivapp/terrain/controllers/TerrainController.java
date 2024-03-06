@@ -29,7 +29,7 @@ public class TerrainController {
         return new ResponseEntity<>(terrains, HttpStatus.OK);
     }
 
-    @GetMapping("/crud/my/terrains")
+    @GetMapping("/crud/terrains")
     public ResponseEntity<Page<Terrain>> getMyTerrains(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
