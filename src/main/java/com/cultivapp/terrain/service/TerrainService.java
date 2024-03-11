@@ -35,7 +35,7 @@ public class TerrainService {
 
     public Terrain getTerrainById(Long id) {
         return terrainRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Terrain not found for this id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Terreno no encontrado para este id: " + id));
     }
 
     public Terrain updateTerrain(Long id, Terrain terrainDetails) {
@@ -43,13 +43,14 @@ public class TerrainService {
                 .orElseThrow(() -> new ResourceNotFoundException("Terreno no encontrado para este id: " + id));
         terrain.setArea(terrainDetails.getArea());
         terrain.setSoilType(terrainDetails.getSoilType());
-        terrain.setPlantType(terrainDetails.getPlantType());
         terrain.setPhoto(terrainDetails.getPhoto());
         terrain.setEmail(terrainDetails.getEmail());
         terrain.setRemainingDays(terrainDetails.getRemainingDays());
         terrain.setForSale(terrainDetails.isForSale());
         terrain.setFullName(terrainDetails.getFullName());
 
+        terrain.getSeedTypes().clear();
+        terrain.getSeedTypes().addAll(terrainDetails.getSeedTypes());
         return terrainRepository.save(terrain);
     }
 
