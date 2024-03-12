@@ -32,6 +32,7 @@ public class TerrainService {
     public void createTerrainWithSeedTypes(TerrainRequest request) {
         Terrain terrain = new Terrain();
         terrain.setId(request.getId());
+        terrain.setName(request.getName());
         terrain.setArea(request.getArea());
         terrain.setSoilType(request.getSoilType());
         terrain.setPhoto(request.getPhoto());
@@ -55,6 +56,7 @@ public class TerrainService {
         return terrains.stream()
                 .map(terrain -> TerrainDTO.builder()
                         .id(terrain.getId())
+                        .name(terrain.getName())
                         .area(terrain.getArea())
                         .soilType(terrain.getSoilType())
                         .photo(terrain.getPhoto())
@@ -106,6 +108,7 @@ public class TerrainService {
     public Terrain updateTerrain(Long id, Terrain terrainDetails) {
         Terrain terrain = terrainRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Terreno no encontrado para este id: " + id));
+        terrain.setName(terrainDetails.getName());
         terrain.setArea(terrainDetails.getArea());
         terrain.setSoilType(terrainDetails.getSoilType());
         terrain.setPhoto(terrainDetails.getPhoto());

@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class TerrainDTO {
     private Long id;
+    private String name;
     private String area;
     private String soilType;
     private String photo;

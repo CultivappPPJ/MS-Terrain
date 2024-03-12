@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class TerrainRequest {
     private Long id;
+    private String name;
     private String area;
     private String soilType;
     private List<Long> seedTypeIds;
