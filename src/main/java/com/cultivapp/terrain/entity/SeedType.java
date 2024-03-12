@@ -1,10 +1,13 @@
 package com.cultivapp.terrain.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "seed_types")
@@ -17,6 +20,6 @@ public class SeedType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "seedTypes")
-    private List<Terrain> terrains = new ArrayList<>();
+    @ManyToMany(mappedBy = "seedTypes", fetch = FetchType.EAGER)
+    private Set<Terrain> terrains = new HashSet<>();
 }
