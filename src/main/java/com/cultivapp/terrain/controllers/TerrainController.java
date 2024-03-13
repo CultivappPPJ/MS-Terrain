@@ -19,9 +19,13 @@ public class TerrainController {
     private final TerrainService terrainService;
 
     @PostMapping("/crud/create")
-    public ResponseEntity<String> addTerrain(@RequestBody TerrainRequest request) {
-        terrainService.createTerrainWithSeedTypes(request);
-        return ResponseEntity.ok("Creado con éxito!");
+    public ResponseEntity<String> createTerrain(@RequestBody TerrainRequest terrainRequest) {
+        try {
+            terrainService.createTerrain(terrainRequest);
+            return ResponseEntity.ok("Terreno creado con exito!");
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Falla al crear el terreno: " + ex.getMessage());
+        }
     }
 
     @GetMapping("/all")
@@ -50,16 +54,15 @@ public class TerrainController {
     }
 
     @GetMapping("/crud/{id}")
-    public ResponseEntity<Terrain> getTerrainById(@PathVariable Long id) {
-        Terrain terrain = terrainService.getTerrainById(id);
-        return new ResponseEntity<>(terrain, HttpStatus.OK);
+    public ResponseEntity<TerrainDTO> getTerrainById(@PathVariable Long id) {
+        TerrainDTO terrainDTO = terrainService.getTerrainById(id);
+        return new ResponseEntity<>(terrainDTO, HttpStatus.OK);
     }
 
-
     @PutMapping("/crud/update/{id}")
-    public ResponseEntity<Terrain> updateTerrain(@PathVariable Long id, @RequestBody Terrain terrainDetails) {
-        Terrain updatedTerrain = terrainService.updateTerrain(id, terrainDetails);
-        return ResponseEntity.ok(updatedTerrain);
+    public ResponseEntity<TerrainDTO> updateTerrain(@PathVariable Long id, @RequestBody TerrainDTO terrainDTO) {
+        TerrainDTO updatedTerrainDTO = terrainService.updateTerrain(id, terrainDTO);
+        return new ResponseEntity<>(updatedTerrainDTO, HttpStatus.OK);
     }
 
 }

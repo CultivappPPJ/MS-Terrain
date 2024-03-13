@@ -2,11 +2,11 @@ package com.cultivapp.terrain.service;
 
 import com.cultivapp.terrain.entity.SeedType;
 import com.cultivapp.terrain.entity.Terrain;
+import com.cultivapp.terrain.entity.TerrainSeedType;
 import com.cultivapp.terrain.entity.dto.PageDTO;
 import com.cultivapp.terrain.entity.dto.SeedTypeDTO;
 import com.cultivapp.terrain.entity.dto.TerrainDTO;
 import com.cultivapp.terrain.entity.dto.TerrainRequest;
-import com.cultivapp.terrain.exceptions.ResourceNotFoundException;
 import com.cultivapp.terrain.repository.SeedTypeRepository;
 import com.cultivapp.terrain.repository.TerrainRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,62 +29,66 @@ public class TerrainService {
     private final SeedTypeRepository seedTypeRepository;
 
     @Transactional
-    public void createTerrainWithSeedTypes(TerrainRequest request) {
+    public void createTerrain(TerrainRequest terrainRequest) {
         Terrain terrain = new Terrain();
-        terrain.setId(request.getId());
-        terrain.setName(request.getName());
-        terrain.setArea(request.getArea());
-        terrain.setSoilType(request.getSoilType());
-        terrain.setPhoto(request.getPhoto());
-        terrain.setEmail(request.getEmail());
-        terrain.setRemainingDays(request.getRemainingDays());
-        terrain.setForSale(request.isForSale());
-        terrain.setFullName(request.getFullName());
+        terrain.setName(terrainRequest.getName());
+        terrain.setArea(terrainRequest.getArea());
+        terrain.setSoilType(terrainRequest.getSoilType());
+        terrain.setPhoto(terrainRequest.getPhoto());
+        terrain.setEmail(terrainRequest.getEmail());
+        terrain.setRemainingDays(terrainRequest.getRemainingDays());
+        terrain.setForSale(terrainRequest.isForSale());
+        terrain.setFullName(terrainRequest.getFullName());
 
-        Set<SeedType> seedTypes = new HashSet<>();
-        for (Long seedTypeId : request.getSeedTypeIds()) {
+        Set<TerrainSeedType> terrainSeedTypes = new HashSet<>();
+        for (Long seedTypeId : terrainRequest.getSeedTypeIds()) {
             SeedType seedType = seedTypeRepository.findById(seedTypeId)
-                    .orElseThrow(() -> new RuntimeException("SeedType not found!"));
-            seedTypes.add(seedType);
+                    .orElseThrow(() -> new RuntimeException("SeedType not found: " + seedTypeId));
+            TerrainSeedType terrainSeedType = new TerrainSeedType();
+            terrainSeedType.setTerrain(terrain);
+            terrainSeedType.setSeedType(seedType);
+            terrainSeedTypes.add(terrainSeedType);
         }
+        terrain.setSeedTypes(terrainSeedTypes);
 
-        terrain.setSeedTypes(seedTypes);
         terrainRepository.save(terrain);
     }
 
-    public List<TerrainDTO> convertToTerrainDTOs(List<Terrain> terrains) {
-        return terrains.stream()
-                .map(terrain -> TerrainDTO.builder()
-                        .id(terrain.getId())
-                        .name(terrain.getName())
-                        .area(terrain.getArea())
-                        .soilType(terrain.getSoilType())
-                        .photo(terrain.getPhoto())
-                        .email(terrain.getEmail())
-                        .remainingDays(terrain.getRemainingDays())
-                        .forSale(terrain.isForSale())
-                        .fullName(terrain.getFullName())
-                        .seedTypes(terrain.getSeedTypes().stream()
-                                .map(seedType -> SeedTypeDTO.builder()
-                                        .id(seedType.getId())
-                                        .name(seedType.getName())
-                                        .build())
-                                .collect(Collectors.toList()))
-                        .build())
+    public PageDTO<TerrainDTO> convertToPageDTO(Page<Terrain> terrains) {
+        List<TerrainDTO> terrainDTOList = terrains.getContent().stream()
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
+
+        return new PageDTO<>(
+                terrainDTOList,
+                terrains.getNumber(),
+                terrains.getSize(),
+                terrains.getTotalElements(),
+                terrains.getTotalPages(),
+                terrains.isLast());
     }
 
-    public PageDTO<TerrainDTO> convertToPageDTO(Page<Terrain> terrains) {
-        List<TerrainDTO> terrainDTOs = convertToTerrainDTOs(terrains.getContent());
-        return PageDTO.<TerrainDTO>builder()
-                .content(terrainDTOs)
-                .pageNumber(terrains.getNumber())
-                .pageSize(terrains.getSize())
-                .totalElements(terrains.getTotalElements())
-                .totalPages(terrains.getTotalPages())
-                .last(terrains.isLast())
-                .build();
+    private TerrainDTO convertToDTO(Terrain terrain) {
+        List<SeedTypeDTO> seedTypeDTOList = terrain.getSeedTypes().stream()
+                .map(terrainSeedType -> {
+                    SeedType seedType = terrainSeedType.getSeedType();
+                    return new SeedTypeDTO(seedType.getId(), seedType.getName());
+                })
+                .collect(Collectors.toList());
+
+        return new TerrainDTO(
+                terrain.getId(),
+                terrain.getName(),
+                terrain.getArea(),
+                terrain.getSoilType(),
+                terrain.getPhoto(),
+                terrain.getEmail(),
+                terrain.getRemainingDays(),
+                terrain.isForSale(),
+                terrain.getFullName(),
+                seedTypeDTOList);
     }
+
 
     public Page<Terrain> findTerrainsForSale(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -100,26 +104,27 @@ public class TerrainService {
         terrainRepository.deleteById(id);
     }
 
-    public Terrain getTerrainById(Long id) {
-        return terrainRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Terreno no encontrado para este id: " + id));
+    public TerrainDTO getTerrainById(Long id) {
+        Terrain terrain = terrainRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Terrain not found for this id :: " + id));
+        return convertToDTO(terrain);
     }
 
-    public Terrain updateTerrain(Long id, Terrain terrainDetails) {
+    public TerrainDTO updateTerrain(Long id, TerrainDTO terrainDTO) {
         Terrain terrain = terrainRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Terreno no encontrado para este id: " + id));
-        terrain.setName(terrainDetails.getName());
-        terrain.setArea(terrainDetails.getArea());
-        terrain.setSoilType(terrainDetails.getSoilType());
-        terrain.setPhoto(terrainDetails.getPhoto());
-        terrain.setEmail(terrainDetails.getEmail());
-        terrain.setRemainingDays(terrainDetails.getRemainingDays());
-        terrain.setForSale(terrainDetails.isForSale());
-        terrain.setFullName(terrainDetails.getFullName());
+                .orElseThrow(() -> new RuntimeException("Terrain not found for this id :: " + id));
 
-        terrain.getSeedTypes().clear();
-        terrain.getSeedTypes().addAll(terrainDetails.getSeedTypes());
-        return terrainRepository.save(terrain);
+        terrain.setName(terrainDTO.getName());
+        terrain.setArea(terrainDTO.getArea());
+        terrain.setSoilType(terrainDTO.getSoilType());
+        terrain.setPhoto(terrainDTO.getPhoto());
+        terrain.setEmail(terrainDTO.getEmail());
+        terrain.setRemainingDays(terrainDTO.getRemainingDays());
+        terrain.setForSale(terrainDTO.isForSale());
+        terrain.setFullName(terrainDTO.getFullName());
+
+        Terrain updatedTerrain = terrainRepository.save(terrain);
+        return convertToDTO(updatedTerrain);
     }
 
 }
