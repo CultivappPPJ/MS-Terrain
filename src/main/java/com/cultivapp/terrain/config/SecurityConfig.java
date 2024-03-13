@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers("/api/v1/terrain/crud/**").authenticated()
+                        .pathMatchers("/api/seed-types/**").authenticated()
                         .anyExchange().permitAll())
                 .oauth2ResourceServer(oauth2ResourceServer ->
                         oauth2ResourceServer.jwt(jwt ->
