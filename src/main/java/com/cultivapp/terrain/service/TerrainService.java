@@ -46,6 +46,14 @@ public class TerrainService {
     }
 
     @Transactional
+    public boolean deleteTerrainsByEmail(String email) {
+        // Borra todos los terrenos asociados al email específico
+        terrainRepository.deleteByEmail(email);
+        return true;
+    }
+
+
+    @Transactional
     public Terrain updateTerrain(Terrain terrain) {
         Optional<Terrain> existingTerrainOptional = terrainRepository.findByName(terrain.getName());
 
@@ -79,10 +87,6 @@ public class TerrainService {
         return terrainRepository.findAllByEmail(email, pageable);
     }
 
-    public void deleteTerrain(Long id) {
-        terrainRepository.deleteById(id);
-    }
-
     public Terrain getTerrainById(Long id) {
         return terrainRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Terrain not found for this id: " + id));
@@ -97,7 +101,7 @@ public class TerrainService {
         terrain.setPhoto(terrainDetails.getPhoto());
         terrain.setEmail(terrainDetails.getEmail());
         terrain.setRemainingDays(terrainDetails.getRemainingDays());
-        terrain.setForSale(terrainDetails.isForSale());
+        terrain.setForSale(terrainDetails.getForSale());
         terrain.setFullName(terrainDetails.getFullName());
 
         return terrainRepository.save(terrain);

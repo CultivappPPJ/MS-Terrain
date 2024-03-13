@@ -32,6 +32,17 @@ public class TerrainController {
         }
     }
 
+    @DeleteMapping("/crud/deleteByUser/{email}")
+    public ResponseEntity<String> deleteTerrainsByUser(@PathVariable String email) {
+        boolean deleted = terrainService.deleteTerrainsByEmail(email);
+
+        if (deleted) {
+            return new ResponseEntity<>("Terrenos eliminados exitosamente.", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("No se encontraron terrenos del usuario.", HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PutMapping("/crud/update/{terrainName}")
     public ResponseEntity<Terrain> updateTerrain(@RequestBody Terrain terrain, @PathVariable String terrainName) {
         Terrain updatedTerrain = terrainService.updateTerrain(terrain);
@@ -53,12 +64,6 @@ public class TerrainController {
             @RequestParam String email) {
         Page<Terrain> terrains = terrainService.getMyTerrains(page, size, email);
         return new ResponseEntity<>(terrains, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/crud/delete/{id}")
-    public ResponseEntity<Void> deleteTerrain(@PathVariable Long id) {
-        terrainService.deleteTerrain(id);
-        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/crud/{id}")

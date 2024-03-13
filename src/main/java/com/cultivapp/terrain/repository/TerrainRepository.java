@@ -16,4 +16,6 @@ public interface TerrainRepository extends JpaRepository<Terrain, Long> {
     Optional<Terrain> findByName(String name);
 
     void deleteByName(String name);
+
+    void deleteByEmail(String email);
 }

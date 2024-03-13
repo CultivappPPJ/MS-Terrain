@@ -1,0 +1,23 @@
+[33mcommit cb71f74a0aaac5fb3f86f51589a748bb7478b61c[m[33m ([m[1;36mHEAD -> [m[1;32mfeature/crud[m[33m, [m[1;31morigin/feature/crud[m[33m)[m
+Author: Sebastián <sebastian.h.neira@outlook.com>
+Date:   Tue Mar 5 16:56:29 2024 -0300
+
+    Se agrega endpoint de getTerrainsForSale y getMyTerrains
+
+[33mcommit fc88920ba83ddcc41b911e2eee0f6367e3df4a5e[m
+Author: Sebastián <sebastian.h.neira@outlook.com>
+Date:   Tue Mar 5 13:15:09 2024 -0300
+
+    Se agrega create y getAllTerrains
+
+[33mcommit 806f6cee6fdcea01ad96f5ac57509caed88efe16[m
+Author: Sebastián <sebastian.h.neira@outlook.com>
+Date:   Tue Mar 5 11:26:06 2024 -0300
+
+    Se agregar Validación de token
+
+[33mcommit 9f792447dd89e5f0c397451fba4f075beefa2269[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m, [m[1;32mdevelop[m[33m)[m
+Author: Sebastián <sebastian.h.neira@outlook.com>
+Date:   Thu Feb 22 12:19:31 2024 -0300
+
+    Initial Commit
