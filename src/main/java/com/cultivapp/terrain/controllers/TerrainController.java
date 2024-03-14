@@ -1,6 +1,9 @@
 package com.cultivapp.terrain.controllers;
 
 import com.cultivapp.terrain.entity.Terrain;
+import com.cultivapp.terrain.entity.dto.PageDTO;
+import com.cultivapp.terrain.entity.dto.TerrainDTO;
+import com.cultivapp.terrain.entity.dto.TerrainRequest;
 import com.cultivapp.terrain.service.TerrainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,9 +19,9 @@ public class TerrainController {
     private final TerrainService terrainService;
 
     @PostMapping("/crud/create")
-    public ResponseEntity<Terrain> createTerrain(@RequestBody Terrain terrain) {
-        Terrain createdTerrain = terrainService.createTerrain(terrain);
-        return new ResponseEntity<>(createdTerrain, HttpStatus.CREATED);
+    public ResponseEntity<String> addTerrain(@RequestBody TerrainRequest request) {
+        terrainService.createTerrainWithSeedTypes(request);
+        return ResponseEntity.ok("Creado con éxito!");
     }
 
     @DeleteMapping("/crud/delete/{terrainName}")
@@ -50,20 +53,22 @@ public class TerrainController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Page<Terrain>> getTerrainsForSale(
+    public ResponseEntity<PageDTO<TerrainDTO>> getTerrainsForSale(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "3") int size) {
         Page<Terrain> terrains = terrainService.findTerrainsForSale(page, size);
-        return new ResponseEntity<>(terrains, HttpStatus.OK);
+        PageDTO<TerrainDTO> pageDTO = terrainService.convertToPageDTO(terrains);
+        return new ResponseEntity<>(pageDTO, HttpStatus.OK);
     }
 
     @GetMapping("/crud/terrains")
-    public ResponseEntity<Page<Terrain>> getMyTerrains(
+    public ResponseEntity<PageDTO<TerrainDTO>> getMyTerrains(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "3") int size,
             @RequestParam String email) {
         Page<Terrain> terrains = terrainService.getMyTerrains(page, size, email);
-        return new ResponseEntity<>(terrains, HttpStatus.OK);
+        PageDTO<TerrainDTO> pageDTO = terrainService.convertToPageDTO(terrains);
+        return new ResponseEntity<>(pageDTO, HttpStatus.OK);
     }
 
     @GetMapping("/crud/{id}")

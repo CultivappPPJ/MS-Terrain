@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "terrain")
 @Data
@@ -19,7 +22,6 @@ public class Terrain {
     private String name;
     private String area;
     private String soilType;
-    private String plantType;
     private String photo;
     private String email;
     private Long remainingDays;
@@ -30,6 +32,10 @@ public class Terrain {
     public boolean getForSale() {
         return this.forSale;
     }
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "terrain_seed_types",
+            joinColumns = {@JoinColumn(name = "terrain_id")},
+            inverseJoinColumns = {@JoinColumn(name = "seed_type_id")})
+    private Set<SeedType> seedTypes = new HashSet<>();
 }
-
-
