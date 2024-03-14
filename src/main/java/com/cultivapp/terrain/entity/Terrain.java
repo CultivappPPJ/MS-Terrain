@@ -28,14 +28,7 @@ public class Terrain {
     private boolean forSale;
     private String fullName;
     private String location;
-
     public boolean getForSale() {
         return this.forSale;
     }
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "terrain_seed_types",
-            joinColumns = {@JoinColumn(name = "terrain_id")},
-            inverseJoinColumns = {@JoinColumn(name = "seed_type_id")})
-    private Set<SeedType> seedTypes = new HashSet<>();
 }

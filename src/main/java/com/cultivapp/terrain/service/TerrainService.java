@@ -135,7 +135,6 @@ public class TerrainService {
             existingTerrain.setForSale(terrain.getForSale());
             existingTerrain.setFullName(terrain.getFullName());
             existingTerrain.setLocation(terrain.getLocation());
-
             terrainRepository.save(existingTerrain); // Save the updated entity
             return existingTerrain;
         } else {
