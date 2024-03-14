@@ -9,10 +9,9 @@ import java.util.List;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class TerrainRequest {
-    private Long id;
     private String name;
     private String area;
     private String soilType;

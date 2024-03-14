@@ -1,10 +1,7 @@
 package com.cultivapp.terrain.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,6 +17,8 @@ public class SeedType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @ManyToMany(mappedBy = "seedTypes", fetch = FetchType.EAGER)
-    private Set<Terrain> terrains = new HashSet<>();
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "seedType", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<TerrainSeedType> terrains = new HashSet<>();
 }

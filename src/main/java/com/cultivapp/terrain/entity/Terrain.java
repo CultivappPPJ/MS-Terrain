@@ -1,10 +1,7 @@
 package com.cultivapp.terrain.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,8 +24,9 @@ public class Terrain {
     private Long remainingDays;
     private boolean forSale;
     private String fullName;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "terrain", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<TerrainSeedType> seedTypes = new HashSet<>();
     private String location;
-    public boolean getForSale() {
-        return this.forSale;
-    }
 }
