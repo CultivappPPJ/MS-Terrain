@@ -1,9 +1,0 @@
-mostrar los datos en agregar terrenos desde la bdd con el mail
-
-eliminar por id?
-
-editar por nombre
-
-editar por id?
-
-sacar email y full name del token (o del otro MS) y usarlos en el crud)
