@@ -28,5 +28,5 @@ public class Terrain {
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "terrain", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<TerrainSeedType> seedTypes = new HashSet<>();
-
+    private String location;
 }
