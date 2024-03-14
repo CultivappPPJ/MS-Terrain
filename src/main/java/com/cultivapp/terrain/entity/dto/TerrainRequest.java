@@ -1,33 +1,25 @@
-package com.cultivapp.terrain.entity;
+package com.cultivapp.terrain.entity.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
-@Entity
-@Table(name = "terrain")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class Terrain {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class TerrainRequest {
     private Long id;
     private String name;
     private String area;
     private String soilType;
+    private List<Long> seedTypeIds;
     private String photo;
     private String email;
     private Long remainingDays;
     private boolean forSale;
     private String fullName;
-    public boolean getForSale() {
-        return this.forSale;
-    }
 }

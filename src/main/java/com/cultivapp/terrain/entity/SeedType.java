@@ -10,24 +10,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "terrain")
+@Table(name = "seed_types")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Terrain {
+public class SeedType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String area;
-    private String soilType;
-    private String photo;
-    private String email;
-    private Long remainingDays;
-    private boolean forSale;
-    private String fullName;
-    public boolean getForSale() {
-        return this.forSale;
-    }
+    @ManyToMany(mappedBy = "seedTypes", fetch = FetchType.EAGER)
+    private Set<Terrain> terrains = new HashSet<>();
 }
