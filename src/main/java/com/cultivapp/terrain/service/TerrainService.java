@@ -15,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -65,7 +64,7 @@ public class TerrainService {
                         .photo(terrain.getPhoto())
                         .email(terrain.getEmail())
                         .remainingDays(terrain.getRemainingDays())
-                        .forSale(terrain.isForSale())
+                        .forSale(terrain.getForSale())
                         .fullName(terrain.getFullName())
                         .seedTypes(terrain.getSeedTypes().stream()
                                 .map(seedType -> SeedTypeDTO.builder()
@@ -130,13 +129,12 @@ public class TerrainService {
             existingTerrain.setName(terrain.getName());
             existingTerrain.setArea(terrain.getArea());
             existingTerrain.setSoilType(terrain.getSoilType());
-            existingTerrain.setPlantType(terrain.getPlantType());
             existingTerrain.setPhoto(terrain.getPhoto());
             existingTerrain.setEmail(terrain.getEmail());
             existingTerrain.setRemainingDays(terrain.getRemainingDays());
             existingTerrain.setForSale(terrain.getForSale());
             existingTerrain.setFullName(terrain.getFullName());
-
+            existingTerrain.setLocation(terrain.getLocation());
             terrainRepository.save(existingTerrain); // Save the updated entity
             return existingTerrain;
         } else {
@@ -170,6 +168,7 @@ public class TerrainService {
         terrain.setRemainingDays(terrainDetails.getRemainingDays());
         terrain.setForSale(terrainDetails.getForSale());
         terrain.setFullName(terrainDetails.getFullName());
+        terrain.setLocation(terrain.getLocation());
 
         terrain.getSeedTypes().clear();
         terrain.getSeedTypes().addAll(terrainDetails.getSeedTypes());
