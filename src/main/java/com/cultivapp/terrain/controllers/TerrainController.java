@@ -72,7 +72,6 @@ public class TerrainController {
         return new ResponseEntity<>(terrain, HttpStatus.OK);
     }
 
-
     @PutMapping("/crud/update/{id}")
     public ResponseEntity<Terrain> updateTerrain(@PathVariable Long id, @RequestBody Terrain terrainDetails) {
         Terrain updatedTerrain = terrainService.updateTerrain(id, terrainDetails);
