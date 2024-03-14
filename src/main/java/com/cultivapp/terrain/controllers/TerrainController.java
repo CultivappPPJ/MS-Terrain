@@ -24,6 +24,34 @@ public class TerrainController {
         return ResponseEntity.ok("Creado con éxito!");
     }
 
+    @DeleteMapping("/crud/delete/{terrainName}")
+    public ResponseEntity<String> deleteTerrain(@PathVariable String terrainName) {
+        boolean deleted = terrainService.deleteTerrain(terrainName);
+
+        if (deleted) {
+            return new ResponseEntity<>("Terreno eliminado exitosamente.", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("No se encontró el terreno con el ID especificado.", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/crud/deleteByUser/{email}")
+    public ResponseEntity<String> deleteTerrainsByUser(@PathVariable String email) {
+        boolean deleted = terrainService.deleteTerrainsByEmail(email);
+
+        if (deleted) {
+            return new ResponseEntity<>("Terrenos eliminados exitosamente.", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("No se encontraron terrenos del usuario.", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/crud/update/{terrainName}")
+    public ResponseEntity<Terrain> updateTerrain(@RequestBody Terrain terrain, @PathVariable String terrainName) {
+        Terrain updatedTerrain = terrainService.updateTerrain(terrain);
+        return new ResponseEntity<>(updatedTerrain, HttpStatus.OK);
+    }
+
     @GetMapping("/all")
     public ResponseEntity<PageDTO<TerrainDTO>> getTerrainsForSale(
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -43,18 +71,11 @@ public class TerrainController {
         return new ResponseEntity<>(pageDTO, HttpStatus.OK);
     }
 
-    @DeleteMapping("/crud/delete/{id}")
-    public ResponseEntity<Void> deleteTerrain(@PathVariable Long id) {
-        terrainService.deleteTerrain(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @GetMapping("/crud/{id}")
     public ResponseEntity<Terrain> getTerrainById(@PathVariable Long id) {
         Terrain terrain = terrainService.getTerrainById(id);
         return new ResponseEntity<>(terrain, HttpStatus.OK);
     }
-
 
     @PutMapping("/crud/update/{id}")
     public ResponseEntity<Terrain> updateTerrain(@PathVariable Long id, @RequestBody Terrain terrainDetails) {
