@@ -25,6 +25,7 @@ public class Terrain {
     private Long remainingDays;
     private boolean forSale;
     private String fullName;
+    private String location;
 
     public boolean getForSale() {
         return this.forSale;

@@ -69,6 +69,7 @@ public class TerrainService {
             existingTerrain.setRemainingDays(terrain.getRemainingDays());
             existingTerrain.setForSale(terrain.getForSale());
             existingTerrain.setFullName(terrain.getFullName());
+            existingTerrain.setLocation(terrain.getLocation());
 
             terrainRepository.save(existingTerrain); // Save the updated entity
             return existingTerrain;
@@ -103,6 +104,7 @@ public class TerrainService {
         terrain.setRemainingDays(terrainDetails.getRemainingDays());
         terrain.setForSale(terrainDetails.getForSale());
         terrain.setFullName(terrainDetails.getFullName());
+        terrain.setLocation(terrain.getLocation());
 
         return terrainRepository.save(terrain);
     }
