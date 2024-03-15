@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -18,7 +19,8 @@ public class TerrainRequest {
     private List<Long> seedTypeIds;
     private String photo;
     private String email;
-    private Long remainingDays;
+    private LocalDate remainingDays;
     private boolean forSale;
     private String fullName;
+    private String location;
 }

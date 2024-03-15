@@ -3,6 +3,7 @@ package com.cultivapp.terrain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +22,7 @@ public class Terrain {
     private String soilType;
     private String photo;
     private String email;
-    private Long remainingDays;
+    private LocalDate remainingDays;
     private boolean forSale;
     private String fullName;
     @ToString.Exclude

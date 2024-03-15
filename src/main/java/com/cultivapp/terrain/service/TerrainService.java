@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class TerrainService {
@@ -41,6 +39,7 @@ public class TerrainService {
         terrain.setRemainingDays(terrainRequest.getRemainingDays());
         terrain.setForSale(terrainRequest.isForSale());
         terrain.setFullName(terrainRequest.getFullName());
+        terrain.setLocation(terrainRequest.getLocation());
 
         Set<TerrainSeedType> terrainSeedTypes = new HashSet<>();
         for (Long seedTypeId : terrainRequest.getSeedTypeIds()) {
@@ -88,30 +87,8 @@ public class TerrainService {
                 terrain.getRemainingDays(),
                 terrain.isForSale(),
                 terrain.getFullName(),
-                seedTypeDTOList);
-    }
-
-    public boolean deleteTerrain(Long terrainId) {
-        Optional<Terrain> terrainOptional = terrainRepository.findById(terrainId);
-
-        if (terrainOptional.isPresent()) {
-            terrainRepository.deleteById(terrainId);
-            return true; // Eliminación exitosa
-        } else {
-            return false; // El terreno con el ID especificado no fue encontrado
-        }
-    }
-
-    @Transactional
-    public boolean deleteTerrain(String terrainName) {
-        Optional<Terrain> terrainOptional = terrainRepository.findByName(terrainName);
-
-        if (terrainOptional.isPresent()) {
-            terrainRepository.deleteByName(terrainName);
-            return true; // Eliminación exitosa
-        } else {
-            return false; // El terreno con el ID especificado no fue encontrado
-        }
+                seedTypeDTOList,
+                terrain.getLocation());
     }
 
     @Transactional
@@ -119,30 +96,6 @@ public class TerrainService {
         // Borra todos los terrenos asociados al email específico
         terrainRepository.deleteByEmail(email);
         return true;
-    }
-
-
-    @Transactional
-    public Terrain updateTerrain(Terrain terrain) {
-        Optional<Terrain> existingTerrainOptional = terrainRepository.findByName(terrain.getName());
-
-        if (existingTerrainOptional.isPresent()) {
-            Terrain existingTerrain = existingTerrainOptional.get();
-
-            existingTerrain.setName(terrain.getName());
-            existingTerrain.setArea(terrain.getArea());
-            existingTerrain.setSoilType(terrain.getSoilType());
-            existingTerrain.setPhoto(terrain.getPhoto());
-            existingTerrain.setEmail(terrain.getEmail());
-            existingTerrain.setRemainingDays(terrain.getRemainingDays());
-            existingTerrain.setForSale(terrain.getForSale());
-            existingTerrain.setFullName(terrain.getFullName());
-            existingTerrain.setLocation(terrain.getLocation());
-            terrainRepository.save(existingTerrain); // Save the updated entity
-            return existingTerrain;
-        } else {
-            throw new RuntimeException("Terrain with ID " + terrain.getId() + " not found.");
-        }
     }
 
     public Page<Terrain> findTerrainsForSale(int page, int size) {
@@ -155,7 +108,7 @@ public class TerrainService {
         return terrainRepository.findAllByEmail(email, pageable);
     }
 
-    public void deleteTerrain(Long id) {
+    public void deleteTerrainById(Long id) {
         terrainRepository.deleteById(id);
     }
 
@@ -169,7 +122,7 @@ public class TerrainService {
     public TerrainDTO updateTerrain(Long id, TerrainDTO terrainDTO) {
         Terrain terrain = terrainRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Terrain not found for this id :: " + id));
-
+        terrain.setId(terrainDTO.getId());
         terrain.setName(terrainDTO.getName());
         terrain.setArea(terrainDTO.getArea());
         terrain.setSoilType(terrainDTO.getSoilType());
@@ -178,6 +131,7 @@ public class TerrainService {
         terrain.setRemainingDays(terrainDTO.getRemainingDays());
         terrain.setForSale(terrainDTO.isForSale());
         terrain.setFullName(terrainDTO.getFullName());
+        terrain.setLocation(terrainDTO.getLocation());
 
         Terrain updatedTerrain = terrainRepository.save(terrain);
         return convertToDTO(updatedTerrain);
