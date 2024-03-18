@@ -28,7 +28,6 @@ public class TerrainService {
 
     private final TerrainRepository terrainRepository;
     private final SeedTypeRepository seedTypeRepository;
-    private final TerrainSeedTypeService terrainSeedTypeService;
 
     @Transactional
     public void createTerrain(TerrainRequest terrainRequest) {
@@ -100,7 +99,6 @@ public class TerrainService {
         optionalTerrain.ifPresent(terrain -> {
             terrain.setEnabled(false);
             terrainRepository.save(terrain);
-            terrainSeedTypeService.disableTerrainSeedTypesByTerrainId(id);
         });
     }
 
@@ -108,7 +106,6 @@ public class TerrainService {
         List<Terrain> terrainList = terrainRepository.findAllByEmail(email);
         terrainList.forEach(terrain -> terrain.setEnabled(false));
         terrainRepository.saveAll(terrainList);
-        terrainList.forEach(terrain -> terrainSeedTypeService.disableTerrainSeedTypesByTerrainId(terrain.getId()));
         return true;
     }
 
