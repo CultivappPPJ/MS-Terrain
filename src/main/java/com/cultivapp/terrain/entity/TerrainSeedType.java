@@ -21,5 +21,4 @@ public class TerrainSeedType {
     @ManyToOne
     @JoinColumn(name = "seed_type_id")
     private SeedType seedType;
-    private Boolean enabled;
 }
