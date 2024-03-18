@@ -30,4 +30,5 @@ public class Terrain {
     @OneToMany(mappedBy = "terrain", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<TerrainSeedType> seedTypes = new HashSet<>();
     private String location;
+    private Boolean enabled;
 }

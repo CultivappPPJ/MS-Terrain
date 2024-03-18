@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,7 @@ public class TerrainService {
 
     private final TerrainRepository terrainRepository;
     private final SeedTypeRepository seedTypeRepository;
+    private final TerrainSeedTypeService terrainSeedTypeService;
 
     @Transactional
     public void createTerrain(TerrainRequest terrainRequest) {
@@ -40,6 +42,7 @@ public class TerrainService {
         terrain.setForSale(terrainRequest.isForSale());
         terrain.setFullName(terrainRequest.getFullName());
         terrain.setLocation(terrainRequest.getLocation());
+        terrain.setEnabled(true);
 
         Set<TerrainSeedType> terrainSeedTypes = new HashSet<>();
         for (Long seedTypeId : terrainRequest.getSeedTypeIds()) {
@@ -92,11 +95,23 @@ public class TerrainService {
     }
 
     @Transactional
+    public void deleteTerrainById(Long id) {
+        Optional<Terrain> optionalTerrain = terrainRepository.findById(id);
+        optionalTerrain.ifPresent(terrain -> {
+            terrain.setEnabled(false);
+            terrainRepository.save(terrain);
+            terrainSeedTypeService.disableTerrainSeedTypesByTerrainId(id);
+        });
+    }
+
     public boolean deleteTerrainsByEmail(String email) {
-        // Borra todos los terrenos asociados al email específico
-        terrainRepository.deleteByEmail(email);
+        List<Terrain> terrainList = terrainRepository.findAllByEmail(email);
+        terrainList.forEach(terrain -> terrain.setEnabled(false));
+        terrainRepository.saveAll(terrainList);
+        terrainList.forEach(terrain -> terrainSeedTypeService.disableTerrainSeedTypesByTerrainId(terrain.getId()));
         return true;
     }
+
 
     public Page<Terrain> findTerrainsForSale(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -106,10 +121,6 @@ public class TerrainService {
     public Page<Terrain> getMyTerrains(int page, int size, String email){
         Pageable pageable = PageRequest.of(page, size);
         return terrainRepository.findAllByEmail(email, pageable);
-    }
-
-    public void deleteTerrainById(Long id) {
-        terrainRepository.deleteById(id);
     }
 
     public TerrainDTO getTerrainById(Long id) {
