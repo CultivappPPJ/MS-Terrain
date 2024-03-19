@@ -1,9 +1,7 @@
 package com.cultivapp.terrain.service;
 
-import com.cultivapp.terrain.entity.SeedType;
 import com.cultivapp.terrain.entity.Terrain;
-import com.cultivapp.terrain.entity.TerrainSeedType;
-import com.cultivapp.terrain.entity.dto.PageDTO;
+import com.cultivapp.terrain.entity.dto.CropDTO;
 import com.cultivapp.terrain.entity.dto.SeedTypeDTO;
 import com.cultivapp.terrain.entity.dto.TerrainDTO;
 import com.cultivapp.terrain.entity.dto.TerrainRequest;
@@ -16,9 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,60 +31,46 @@ public class TerrainService {
         terrain.setArea(terrainRequest.getArea());
         terrain.setSoilType(terrainRequest.getSoilType());
         terrain.setPhoto(terrainRequest.getPhoto());
-        terrain.setEmail(terrainRequest.getEmail());
-        terrain.setRemainingDays(terrainRequest.getRemainingDays());
-        terrain.setForSale(terrainRequest.isForSale());
-        terrain.setFullName(terrainRequest.getFullName());
         terrain.setLocation(terrainRequest.getLocation());
-
-        Set<TerrainSeedType> terrainSeedTypes = new HashSet<>();
-        for (Long seedTypeId : terrainRequest.getSeedTypeIds()) {
-            SeedType seedType = seedTypeRepository.findById(seedTypeId)
-                    .orElseThrow(() -> new RuntimeException("SeedType not found: " + seedTypeId));
-            TerrainSeedType terrainSeedType = new TerrainSeedType();
-            terrainSeedType.setTerrain(terrain);
-            terrainSeedType.setSeedType(seedType);
-            terrainSeedTypes.add(terrainSeedType);
-        }
-        terrain.setSeedTypes(terrainSeedTypes);
+        terrain.setEmail(terrainRequest.getEmail());
+        terrain.setFullName(terrainRequest.getFullName());
 
         terrainRepository.save(terrain);
     }
 
-    public PageDTO<TerrainDTO> convertToPageDTO(Page<Terrain> terrains) {
-        List<TerrainDTO> terrainDTOList = terrains.getContent().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+    public Page<TerrainDTO> getAllTerrains(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Terrain> terrainPage = terrainRepository.findAll(pageable);
 
-        return new PageDTO<>(
-                terrainDTOList,
-                terrains.getNumber(),
-                terrains.getSize(),
-                terrains.getTotalElements(),
-                terrains.getTotalPages(),
-                terrains.isLast());
+        return terrainPage.map(this::convertToDTO);
     }
 
     private TerrainDTO convertToDTO(Terrain terrain) {
-        List<SeedTypeDTO> seedTypeDTOList = terrain.getSeedTypes().stream()
-                .map(terrainSeedType -> {
-                    SeedType seedType = terrainSeedType.getSeedType();
-                    return new SeedTypeDTO(seedType.getId(), seedType.getName());
-                })
+        List<CropDTO> cropDTOList = terrain.getCrops().stream()
+                .map(crop -> CropDTO.builder()
+                        .id(crop.getId())
+                        .seedType(SeedTypeDTO.builder()
+                                .id(crop.getSeedType().getId())
+                                .name(crop.getSeedType().getName())
+                                .build())
+                        .area(crop.getArea())
+                        .photo(crop.getPhoto())
+                        .harvestDate(crop.getHarvestDate())
+                        .forSale(crop.isForSale())
+                        .build())
                 .collect(Collectors.toList());
 
-        return new TerrainDTO(
-                terrain.getId(),
-                terrain.getName(),
-                terrain.getArea(),
-                terrain.getSoilType(),
-                terrain.getPhoto(),
-                terrain.getEmail(),
-                terrain.getRemainingDays(),
-                terrain.isForSale(),
-                terrain.getFullName(),
-                seedTypeDTOList,
-                terrain.getLocation());
+        return TerrainDTO.builder()
+                .id(terrain.getId())
+                .name(terrain.getName())
+                .area(terrain.getArea())
+                .soilType(terrain.getSoilType())
+                .photo(terrain.getPhoto())
+                .location(terrain.getLocation())
+                .email(terrain.getEmail())
+                .fullName(terrain.getFullName())
+                .crops(cropDTOList)
+                .build();
     }
 
     @Transactional
@@ -98,43 +80,13 @@ public class TerrainService {
         return true;
     }
 
-    public Page<Terrain> findTerrainsForSale(int page, int size) {
+    public Page<TerrainDTO> getMyTerrains(int page, int size, String email){
         Pageable pageable = PageRequest.of(page, size);
-        return terrainRepository.findAllByForSaleTrue(pageable);
-    }
-
-    public Page<Terrain> getMyTerrains(int page, int size, String email){
-        Pageable pageable = PageRequest.of(page, size);
-        return terrainRepository.findAllByEmail(email, pageable);
+        Page<Terrain> terrainPage = terrainRepository.findAllByEmail(email, pageable);
+        return terrainPage.map(this::convertToDTO);
     }
 
     public void deleteTerrainById(Long id) {
         terrainRepository.deleteById(id);
     }
-
-    public TerrainDTO getTerrainById(Long id) {
-        Terrain terrain = terrainRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Terrain not found for this id :: " + id));
-        return convertToDTO(terrain);
-
-    }
-
-    public TerrainDTO updateTerrain(Long id, TerrainDTO terrainDTO) {
-        Terrain terrain = terrainRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Terrain not found for this id :: " + id));
-        terrain.setId(terrainDTO.getId());
-        terrain.setName(terrainDTO.getName());
-        terrain.setArea(terrainDTO.getArea());
-        terrain.setSoilType(terrainDTO.getSoilType());
-        terrain.setPhoto(terrainDTO.getPhoto());
-        terrain.setEmail(terrainDTO.getEmail());
-        terrain.setRemainingDays(terrainDTO.getRemainingDays());
-        terrain.setForSale(terrainDTO.isForSale());
-        terrain.setFullName(terrainDTO.getFullName());
-        terrain.setLocation(terrainDTO.getLocation());
-
-        Terrain updatedTerrain = terrainRepository.save(terrain);
-        return convertToDTO(updatedTerrain);
-    }
-
 }

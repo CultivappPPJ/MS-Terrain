@@ -9,8 +9,6 @@ import java.util.Optional;
 
 public interface TerrainRepository extends JpaRepository<Terrain, Long> {
 
-    Page<Terrain> findAllByForSaleTrue(Pageable pageable);
-
     Page<Terrain> findAllByEmail(String email, Pageable pageable);
 
     Optional<Terrain> findByName(String name);
