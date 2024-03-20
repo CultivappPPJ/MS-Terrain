@@ -27,4 +27,5 @@ public class Terrain {
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "terrain", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Crop> crops = new HashSet<>();
+    private Boolean enabled;
 }

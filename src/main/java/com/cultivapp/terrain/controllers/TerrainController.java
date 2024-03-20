@@ -60,7 +60,7 @@ public class TerrainController {
         return new ResponseEntity<>(terrains, HttpStatus.OK);
     }
 
-    @GetMapping("/crud/terrain/{id}")
+    @GetMapping("/find/terrain/{id}")
     public ResponseEntity<TerrainDTO> getTerrain(@PathVariable Long id){
         TerrainDTO terrainDTO = terrainService.getTerrain(id);
         return new ResponseEntity<>(terrainDTO, HttpStatus.OK);

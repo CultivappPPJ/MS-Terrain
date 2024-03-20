@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +37,7 @@ public class TerrainService {
         terrain.setLocation(terrainRequest.getLocation());
         terrain.setEmail(terrainRequest.getEmail());
         terrain.setFullName(terrainRequest.getFullName());
+        terrain.setEnabled(true);
 
         terrainRepository.save(terrain);
     }
@@ -76,9 +78,18 @@ public class TerrainService {
     }
 
     @Transactional
+    public void deleteTerrainById(Long id) {
+        Optional<Terrain> optionalTerrain = terrainRepository.findById(id);
+        optionalTerrain.ifPresent(terrain -> {
+            terrain.setEnabled(false);
+            terrainRepository.save(terrain);
+        });
+    }
+
     public boolean deleteTerrainsByEmail(String email) {
-        // Borra todos los terrenos asociados al email específico
-        terrainRepository.deleteByEmail(email);
+        List<Terrain> terrainList = terrainRepository.findAllByEmail(email);
+        terrainList.forEach(terrain -> terrain.setEnabled(false));
+        terrainRepository.saveAll(terrainList);
         return true;
     }
 
@@ -86,10 +97,6 @@ public class TerrainService {
         Pageable pageable = PageRequest.of(page, size);
         Page<Terrain> terrainPage = terrainRepository.findAllByEmail(email, pageable);
         return terrainPage.map(this::convertToDTO);
-    }
-
-    public void deleteTerrainById(Long id) {
-        terrainRepository.deleteById(id);
     }
 
     public TerrainDTO getTerrain(Long id) {
