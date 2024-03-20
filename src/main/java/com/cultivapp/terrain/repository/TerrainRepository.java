@@ -14,12 +14,12 @@ import java.util.Optional;
 public interface TerrainRepository extends JpaRepository<Terrain, Long> {
 
     @Transactional
-    @Query("SELECT t FROM Terrain t WHERE t.forSale = true AND t.enabled = true")
-    Page<Terrain> findAllByForSaleTrue(Pageable pageable);
-
-    @Transactional
     @Query("SELECT t FROM Terrain t WHERE t.email = :email AND t.enabled = true")
     Page<Terrain> findAllByEmail(@Param("email") String email, Pageable pageable);
+
+    @Transactional
+    @Query("SELECT t FROM Terrain t WHERE t.enabled = true")
+    Page<Terrain> findAll(Pageable pageable);
 
     @Transactional
     @Query("SELECT t FROM Terrain t WHERE t.email = :email AND t.enabled = true")
@@ -28,4 +28,5 @@ public interface TerrainRepository extends JpaRepository<Terrain, Long> {
     @Transactional
     @Query("SELECT t FROM Terrain t WHERE t.id = :id AND t.enabled = true")
     Optional<Terrain> findById(@Param("id") Long id);
+
 }

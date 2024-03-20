@@ -5,16 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TerrainRequest {
-    private String name;
+public class CropRequest {
+    private Long seedTypeId;
     private String area;
-    private String soilType;
     private String photo;
-    private String location;
-    private String email;
-    private String fullName;
+    private LocalDate harvestDate;
+    private boolean forSale;
+    private Long terrainId;
 }

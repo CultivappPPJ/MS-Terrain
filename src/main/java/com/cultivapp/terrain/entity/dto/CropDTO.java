@@ -5,20 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TerrainDTO {
+public class CropDTO {
     private Long id;
-    private String name;
+    private SeedTypeDTO seedType;
     private String area;
-    private String soilType;
     private String photo;
-    private String location;
-    private String email;
-    private String fullName;
-    private List<CropDTO> crops;
+    private LocalDate harvestDate;
+    private boolean forSale;
 }

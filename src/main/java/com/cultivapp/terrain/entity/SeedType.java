@@ -17,8 +17,6 @@ public class SeedType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "seedType", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<TerrainSeedType> terrains = new HashSet<>();
+    @OneToMany(mappedBy = "seedType")
+    private Set<Crop> crops = new HashSet<>();
 }

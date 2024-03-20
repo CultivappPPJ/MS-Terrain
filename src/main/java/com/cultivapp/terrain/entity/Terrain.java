@@ -3,7 +3,6 @@ package com.cultivapp.terrain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,14 +20,12 @@ public class Terrain {
     private String area;
     private String soilType;
     private String photo;
+    private String location;
     private String email;
-    private LocalDate remainingDays;
-    private boolean forSale;
     private String fullName;
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "terrain", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private Set<TerrainSeedType> seedTypes = new HashSet<>();
-    private String location;
+    private Set<Crop> crops = new HashSet<>();
     private Boolean enabled;
 }
