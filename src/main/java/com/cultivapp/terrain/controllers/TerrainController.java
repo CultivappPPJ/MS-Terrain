@@ -59,4 +59,10 @@ public class TerrainController {
         Page<TerrainDTO> terrains = terrainService.getMyTerrains(page, size, email);
         return new ResponseEntity<>(terrains, HttpStatus.OK);
     }
+
+    @GetMapping("/crud/terrain/{id}")
+    public ResponseEntity<TerrainDTO> getTerrain(@PathVariable Long id){
+        TerrainDTO terrainDTO = terrainService.getTerrain(id);
+        return new ResponseEntity<>(terrainDTO, HttpStatus.OK);
+    }
 }
