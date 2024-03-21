@@ -65,4 +65,14 @@ public class TerrainController {
         TerrainDTO terrainDTO = terrainService.getTerrain(id);
         return new ResponseEntity<>(terrainDTO, HttpStatus.OK);
     }
+
+    @PutMapping("/crud/update/terrain/{id}")
+    public ResponseEntity<String> updateTerrain(@PathVariable Long id, @RequestBody TerrainRequest terrainRequest){
+        try {
+            terrainService.updateTerrain(id, terrainRequest);
+            return ResponseEntity.ok("Terreno actualizado con éxito!");
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Falla al actualizar el terreno: " + ex.getMessage());
+        }
+    }
 }
