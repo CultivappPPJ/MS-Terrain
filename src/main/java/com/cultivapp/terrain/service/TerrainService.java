@@ -104,4 +104,21 @@ public class TerrainService {
                 .map(this::convertToDTO)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Terrain not found"));
     }
+
+    @Transactional
+    public void updateTerrain(Long id, TerrainRequest request) {
+        Terrain terrain = terrainRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Terrain not found"));
+
+        terrain.setName(request.getName());
+        terrain.setArea(request.getArea());
+        terrain.setSoilType(request.getSoilType());
+        terrain.setPhoto(request.getPhoto());
+        terrain.setLocation(request.getLocation());
+        terrain.setEmail(request.getEmail());
+        terrain.setFullName(request.getFullName());
+        terrain.setEnabled(true);
+
+        terrainRepository.save(terrain);
+    }
 }
