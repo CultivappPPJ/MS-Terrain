@@ -18,4 +18,5 @@ public class CropDTO {
     private String photo;
     private LocalDate harvestDate;
     private boolean forSale;
+    private Long terrainId;
 }
