@@ -18,7 +18,7 @@
         @ManyToOne
         @JoinColumn(name = "seed_type_id", referencedColumnName = "id")
         private SeedType seedType;
-        private String area;
+        private Long area;
         private String photo;
         private LocalDate harvestDate;
         private boolean forSale;

@@ -14,7 +14,8 @@ import java.util.List;
 public class TerrainDTO {
     private Long id;
     private String name;
-    private String area;
+    private Long area;
+    private Long availableArea;
     private String soilType;
     private String photo;
     private String location;

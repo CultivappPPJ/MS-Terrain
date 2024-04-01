@@ -36,6 +36,13 @@ public class CropService {
         Terrain terrain = terrainRepository.findById(cropRequest.getTerrainId())
                 .orElseThrow(() -> new ResourceNotFoundException("Terrain not found with id " + cropRequest.getTerrainId()));
 
+        Long totalUsedArea = cropRepository.sumAreaByTerrainId(cropRequest.getTerrainId()).orElse(0L);
+        Long newCropArea = cropRequest.getArea();
+
+        if (totalUsedArea + newCropArea > terrain.getArea()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The new crop exceeds the total area of the terrain.");
+        }
+
         Crop crop = Crop.builder()
                 .seedType(seedType)
                 .area(cropRequest.getArea())
@@ -59,6 +66,13 @@ public class CropService {
 
         Terrain terrain = terrainRepository.findById(request.getTerrainId())
                 .orElseThrow(() -> new ResourceNotFoundException("Terrain not found with id " + request.getTerrainId()));
+
+        Long totalUsedArea = cropRepository.sumAreaByTerrainIdExcludingCropId(request.getTerrainId(), id).orElse(0L);
+        Long newCropArea = request.getArea();
+
+        if (totalUsedArea + newCropArea > crop.getTerrain().getArea()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The updated crop exceeds the total area of the terrain.");
+        }
 
         crop.setSeedType(seedType);
         crop.setArea(request.getArea());

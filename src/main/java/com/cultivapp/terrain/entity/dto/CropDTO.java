@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class CropDTO {
     private Long id;
     private SeedTypeDTO seedType;
-    private String area;
+    private Long area;
     private String photo;
     private LocalDate harvestDate;
     private boolean forSale;
