@@ -5,7 +5,6 @@ import com.cultivapp.terrain.entity.dto.CropDTO;
 import com.cultivapp.terrain.entity.dto.SeedTypeDTO;
 import com.cultivapp.terrain.entity.dto.TerrainDTO;
 import com.cultivapp.terrain.entity.dto.TerrainRequest;
-import com.cultivapp.terrain.repository.SeedTypeRepository;
 import com.cultivapp.terrain.repository.TerrainRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,6 @@ import java.util.stream.Collectors;
 public class TerrainService {
 
     private final TerrainRepository terrainRepository;
-    private final SeedTypeRepository seedTypeRepository;
 
     @Transactional
     public void createTerrain(TerrainRequest terrainRequest) {
@@ -61,13 +59,21 @@ public class TerrainService {
                         .photo(crop.getPhoto())
                         .harvestDate(crop.getHarvestDate())
                         .forSale(crop.isForSale())
+                        .terrainId(crop.getTerrain().getId())
                         .build())
                 .collect(Collectors.toList());
+
+        Long totalUsedArea = cropDTOList.stream()
+                .mapToLong(CropDTO::getArea)
+                .sum();
+
+        Long availableArea = terrain.getArea() - totalUsedArea;
 
         return TerrainDTO.builder()
                 .id(terrain.getId())
                 .name(terrain.getName())
                 .area(terrain.getArea())
+                .availableArea(availableArea)
                 .soilType(terrain.getSoilType())
                 .photo(terrain.getPhoto())
                 .location(terrain.getLocation())

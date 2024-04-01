@@ -13,4 +13,10 @@ public interface CropRepository extends JpaRepository<Crop, Long> {
     @Transactional
     @Query("SELECT t FROM Crop t WHERE t.id = :id AND t.enabled = true")
     Optional<Crop> findById(@Param("id") Long id);
+
+    @Query("SELECT SUM(c.area) FROM Crop c WHERE c.terrain.id = :terrainId AND c.id <> :excludeCropId")
+    Optional<Long> sumAreaByTerrainIdExcludingCropId(@Param("terrainId") Long terrainId, @Param("excludeCropId") Long excludeCropId);
+
+    @Query("SELECT SUM(c.area) FROM Crop c WHERE c.terrain.id = :terrainId")
+    Optional<Long> sumAreaByTerrainId(@Param("terrainId") Long terrainId);
 }
