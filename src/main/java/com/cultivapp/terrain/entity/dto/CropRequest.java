@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class CropRequest {
     private Long seedTypeId;
-    private String area;
+    private Long area;
     private String photo;
     private LocalDate harvestDate;
     private boolean forSale;

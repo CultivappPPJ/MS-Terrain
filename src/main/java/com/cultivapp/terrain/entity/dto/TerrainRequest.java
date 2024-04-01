@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TerrainRequest {
     private String name;
-    private String area;
+    private Long area;
     private String soilType;
     private String photo;
     private String location;

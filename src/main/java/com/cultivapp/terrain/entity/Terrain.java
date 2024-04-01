@@ -17,7 +17,7 @@ public class Terrain {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String area;
+    private Long area;
     private String soilType;
     private String photo;
     private String location;
