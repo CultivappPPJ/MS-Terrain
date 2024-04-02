@@ -21,4 +21,10 @@ public interface CropRepository extends JpaRepository<Crop, Long> {
     @Transactional
     @Query("SELECT c FROM Crop c WHERE c.forSale = true AND c.enabled = true")
     Page<Crop> findCropsForSale(Pageable pageable);
+
+    @Query("SELECT SUM(c.area) FROM Crop c WHERE c.terrain.id = :terrainId AND c.id <> :excludeCropId")
+    Optional<Long> sumAreaByTerrainIdExcludingCropId(@Param("terrainId") Long terrainId, @Param("excludeCropId") Long excludeCropId);
+
+    @Query("SELECT SUM(c.area) FROM Crop c WHERE c.terrain.id = :terrainId")
+    Optional<Long> sumAreaByTerrainId(@Param("terrainId") Long terrainId);
 }
