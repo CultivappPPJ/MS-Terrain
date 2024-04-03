@@ -86,10 +86,14 @@ public class TerrainService {
     @Transactional
     public void deleteTerrainById(Long id) {
         Optional<Terrain> optionalTerrain = terrainRepository.findById(id);
-        optionalTerrain.ifPresent(terrain -> {
+        if (optionalTerrain.isPresent()) {
+            Terrain terrain = optionalTerrain.get();
             terrain.setEnabled(false);
+            terrain.getCrops().forEach(crop -> crop.setEnabled(false));
             terrainRepository.save(terrain);
-        });
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Terrain not found");
+        }
     }
 
     public boolean deleteTerrainsByEmail(String email) {
