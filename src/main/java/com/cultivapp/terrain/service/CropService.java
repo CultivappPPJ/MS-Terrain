@@ -18,9 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class CropService {
@@ -124,6 +121,12 @@ public class CropService {
     @Transactional
     public Page<CropDTO> findCropsForSale(Pageable pageable) {
         Page<Crop> cropsPage = cropRepository.findCropsForSale(pageable);
+        return cropsPage.map(this::convertToDTO);
+    }
+
+    @Transactional
+    public Page<CropDTO> findCropsBySeedTypeName(String seedTypeName, Pageable pageable) {
+        Page<Crop> cropsPage = cropRepository.findBySeedTypeName(seedTypeName, pageable);
         return cropsPage.map(this::convertToDTO);
     }
 }

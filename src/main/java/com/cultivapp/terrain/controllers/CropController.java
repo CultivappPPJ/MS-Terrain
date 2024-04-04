@@ -1,6 +1,5 @@
 package com.cultivapp.terrain.controllers;
 
-import com.cultivapp.terrain.entity.Crop;
 import com.cultivapp.terrain.entity.dto.CropDTO;
 import com.cultivapp.terrain.entity.dto.CropRequest;
 import com.cultivapp.terrain.service.CropService;
@@ -11,8 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,5 +56,14 @@ public class CropController {
         Pageable pageable = PageRequest.of(page, size);
         Page<CropDTO> cropDTO = cropService.findCropsForSale(pageable);
         return new ResponseEntity<>(cropDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/all/{seedTypeName}")
+    public ResponseEntity<Page<CropDTO>> getCropsBySeedTypeName(@PathVariable String seedTypeName,
+                                                                @RequestParam(defaultValue = "0") int page,
+                                                                @RequestParam(defaultValue = "3") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CropDTO> cropDTOPage = cropService.findCropsBySeedTypeName(seedTypeName, pageable);
+        return new ResponseEntity<>(cropDTOPage, HttpStatus.OK);
     }
 }
