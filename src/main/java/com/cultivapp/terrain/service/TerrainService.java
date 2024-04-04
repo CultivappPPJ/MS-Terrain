@@ -98,10 +98,16 @@ public class TerrainService {
 
     public boolean deleteTerrainsByEmail(String email) {
         List<Terrain> terrainList = terrainRepository.findAllByEmail(email);
-        terrainList.forEach(terrain -> terrain.setEnabled(false));
+        terrainList.forEach(terrain -> {
+            terrain.setEnabled(false);
+            terrain.getCrops().forEach(crop -> {
+                crop.setEnabled(false);
+            });
+        });
         terrainRepository.saveAll(terrainList);
         return true;
     }
+
 
     public Page<TerrainDTO> getMyTerrains(int page, int size, String email){
         Pageable pageable = PageRequest.of(page, size);
